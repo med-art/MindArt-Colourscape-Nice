@@ -1,38 +1,17 @@
-  // images
-  let bg;
-
-let vertices = [];
-let pressureStore = [];
-
-  let brush = [];
-  let scalar2 = 40;
+  let isMousedown = 0;
+  let vertices = [],
+    pressureStore = [],
+    brush = [];
   // brush mechanics
-  let angle1, segLength;
-  let scalar = 30;
-  let tempwinMouseX = 0;
-  let tempwinMouseY = 0;
-  let tempX = 100;
-  let tempY = 100;
   let dx, dy;
-  // VARIABLES FOR TIME DELAY ON BRUSH
+  //time delay
   let milliCounter;
   let milliTrack = 0;
-  //BRUSH CHARACTERISTICS
-  let milliComp = 5;
-  let scatterAmount = 2;
-  // COLOUR VARAIABLES
-  let colHue;
-  const colHueMin = 0;
-  const colHueMax = 360;
-  let colSat;
-  const colSatMin = 0;
-  const colSatMax = 255;
-  let colBri;
-  const colBriMin = 0;
-  const colBriMax = 255;
+  //colour variables
+  let colHue, colSat, colBri;
   let colOpacity = 0.4;
   let colourBool = 0;
-  let introLayer;
+
   let cloudHSB = [
     [180, 47, 25],
     [178, 23, 55],
@@ -47,29 +26,16 @@ let pressureStore = [];
     [334, 81, 91],
     [300, 67, 99]
   ];
-  const hueDrift = 3;
-  const satDrift = 3;
-  const rotateDrift = 0.2;
-  let brushTemp = 0;
-  let buttonText1state = 0;
-  let buttonText2state = 0;
-  let wmax, hmax, vMax;
-  let audio;
-  let startState = 0;
-  let alphaErase;
-  let eraseState = 0;
-  let saveState = 1;
-  let buttonTEST;
+  let brushRandomiser = 0;
   let autoX = 0,
     autoY = 0,
     pautoX = 0,
-    pautoY = 0; // automated drawing mouse states
-  let textLayer, paintLayer, autoLayer;
+    pautoY = 0;
 
   function preload() {
-    bg = loadImage('assets/paper.jpg'); // background paper
+    bg = loadImage('assets/paper.jpg');
     for (let i = 1; i < 21; i++) {
-      brush[i] = loadImage('assets/br-' + i + '.png') // brush loader
+      brush[i] = loadImage('assets/br-' + i + '.png')
     }
     audio = loadSound('assets/audio.mp3');
     click = loadSound('assets/click.mp3');
@@ -80,6 +46,7 @@ let pressureStore = [];
     textLayer = createGraphics(width, height);
     paintLayer = createGraphics(width, height);
     autoLayer = createGraphics(width, height);
+    textLayer = createGraphics(windowWidth, windowHeight);
     calcDimensions();
     pixelDensity(1); // Ignores retina displays
     imageMode(CENTER); // centers loaded brushes
@@ -87,25 +54,20 @@ let pressureStore = [];
     colorMode(HSB, 360, 100, 100, 1);
     paintLayer.colorMode(HSB, 360, 100, 100);
     autoLayer.colorMode(HSB, 360, 100, 100);
-    colHue = random(colHueMin, colHueMax);
-    colSat = random(colSatMin, colSatMax);
+    colHue = random(360);
+    colSat = random(255);
     backdrop();
     autoLayer.background(352, 68, 89, 100);
-    segLength = windowWidth / 40; // length of delay between touch and paint or line // 15 is a good value
-    strokeWeight(4); // for line work
-    stroke(255, 0, 255); // for line work
-    setProperties(0, 0);
     autoSetProperties();
-    introLayer = createGraphics(width, height);
-    introLayer.blendMode(BLEND);
-    textLayer = createGraphics(windowWidth, windowHeight);
     slide = 0;
     slideShow();
-
     canvas.addEventListener('touchmove', moved);
     canvas.addEventListener('mousemove', moved);
-
-
+    canvas.addEventListener('touchstart', touchdown);
+    canvas.addEventListener('mousedown', touchdown);
+    canvas.addEventListener('touchend', touchstop);
+    canvas.addEventListener('touchleave', touchstop);
+    canvas.addEventListener('mouseup', touchstop);
   }
 
   function backdrop() {
@@ -114,10 +76,7 @@ let pressureStore = [];
   }
 
   function setProperties(_x, _y) {
-    tempwinMouseX = ((windowWidth / 2) - _x); // record position on downpress
-    tempwinMouseY = ((windowHeight / 2) - _y); // record position on downpress
-    brushTemp = int(random(1, 20));
-    //image(bg, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
+    brushRandomiser = int(random(1, 20));
     let swatchTemp = int(random(0, 5));
     if (colourBool) {
       colHue = cloudHSB[swatchTemp][0];
@@ -159,55 +118,42 @@ let pressureStore = [];
     setTimeout(autoSetProperties, 2000);
   }
 
-
-  function touchStarted(){
+  function touchdown(ev) {
+    isMousedown = 1;
     paintLayer.strokeWeight(100);
-        paintLayer.stroke(255, 0, 255, 0.9);
+    paintLayer.stroke(255, 0, 255, 0.9);
     paintLayer.strokeJoin(ROUND);
     paintLayer.noFill();
-
     vertices[0] = [];
     vertices[1] = [];
     pressureStore = [];
-
   }
 
-function touchEnded(){
-
+  function touchstop(ev) {
+    isMousedown = 0;
   }
 
   function moved(ev) {
     ev.preventDefault();
-    //eraseDrawing(ev);
-
+    if (!isMousedown) return;
     vertices[0].push(mouseX);
     vertices[1].push(mouseY);
     pressureStore.push(getPressure(ev));
-
     paintLayer.beginShape();
-    for (let i = 0; i < vertices[0].length; i++){
-
-      if ((i % 4) === 0 ){
-      paintLayer.curveVertex(vertices[0][i], vertices[1][i]); // repeated below, annoying..
-      paintLayer.endShape();
-     paintLayer.strokeWeight(pressureStore[i]*100)
-      paintLayer.beginShape();
-        paintLayer.curveVertex(vertices[0][i-2], vertices[1][i-2])
-          paintLayer.curveVertex(vertices[0][i-1], vertices[1][i-1])
+    for (let i = 0; i < vertices[0].length; i++) {
+      if ((i % 4) === 0) {
+        paintLayer.curveVertex(vertices[0][i], vertices[1][i]); // repeated below, annoying..
+        paintLayer.endShape();
+        paintLayer.strokeWeight(pressureStore[i] * 40)
+        paintLayer.beginShape();
+        paintLayer.curveVertex(vertices[0][i - 2], vertices[1][i - 2])
+        paintLayer.curveVertex(vertices[0][i - 1], vertices[1][i - 1])
       }
-
       paintLayer.curveVertex(vertices[0][i], vertices[1][i]);
-      }
-
-
-      paintLayer.endShape();
-
-
-
+    }
+    paintLayer.endShape();
     return false;
   }
-
-
 
   function autoDraw() {
     pautoX = autoX;
@@ -218,6 +164,13 @@ function touchEnded(){
   }
 
   function makeDrawing(_x, _y, pX, pY) {
+    const rotateDrift = 0.2
+    var angle1 = atan2(dy, dx) + (random(-rotateDrift, rotateDrift));
+    var segLength = windowWidth / 40;
+    var scalar = 30;
+    let milliComp = 5;
+    let tempX = 100;
+    let tempY = 100;
     milliCounter = millis();
     if (milliCounter > milliTrack + milliComp) {
       if (colSat < 10) {
@@ -225,18 +178,18 @@ function touchEnded(){
       }
       dx = _x - tempX;
       dy = _y - tempY;
-      angle1 = atan2(dy, dx) + (random(-rotateDrift, rotateDrift)); // https://p5js.org/reference/#/p5/atan2
-      tempX = _x - (cos(angle1) * segLength / 2); // https://p5js.org/examples/interaction-follow-1.html
+      tempX = _x - (cos(angle1) * segLength / 2);
       tempY = _y - (sin(angle1) * segLength / 2);
       scalar = constrain(300 * (random(3, abs(_x - pX)) / windowWidth), 0.2, 1.2);
-      segment(tempX, tempY, angle1, brush[brushTemp], scalar)
+      segment(tempX, tempY, angle1, brush[brushRandomiser], scalar)
       milliTrack = milliCounter;
     }
   }
 
-
-
   function segment(rakeX, rakeY, a, rake, scalar) {
+    const hueDrift = 3,
+      satDrift = 3;
+    const scatterAmount = 2;
     autoLayer.tint((colHue += random(-hueDrift, hueDrift)), (colSat += random(-satDrift, satDrift)), colBri, colOpacity); // Display at half opacity
     autoLayer.push();
     autoLayer.imageMode(CENTER); // centers loaded brushes
@@ -253,29 +206,25 @@ function touchEnded(){
     colourBool = !colourBool;
     setProperties();
     console.log(colourBool);
-    paintLayer.copy(autoLayer, 0, 0, width, height, 0, 0, width, height);
+    autoCopy();
   }
 
   function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-    textLayer.resizeCanvas(windowWidth, windowHeight);
-    paintLayer.resizeCanvas(windowWidth, windowHeight);
+
+    resizeCanvas(width, height);
+    backdrop();
+    textLayer.resizeCanvas(width, height);
+    paintLayer.resizeCanvas(width, height);
+    autoLayer.resizeCanvas(width, height);
     calcDimensions();
+
     if (introState === 3) {
       removeElements();
       writeTextUI();
     }
+
   }
 
-  getPressure = function (ev) { return ((ev.touches && ev.touches[0] && typeof ev.touches[0]["force"]!=="undefined") ? ev.touches[0]["force"] : 1.0); }
-
-
-
-  function eraseDrawing(ev) {
-    var pressure = getPressure(ev);
-    scalar2 = ((Math.log(pressure+1)*40)+scalar2)/2;
-    //paintLayer.noStroke();
-    paintLayer.strokeWeight(scalar2);
-    paintLayer.stroke(255, 0, 255, 0.9);
-    paintLayer.line(mouseX, mouseY, pmouseX, pmouseY);
+  getPressure = function(ev) {
+    return ((ev.touches && ev.touches[0] && typeof ev.touches[0]["force"] !== "undefined") ? ev.touches[0]["force"] : 1.0);
   }
