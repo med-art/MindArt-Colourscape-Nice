@@ -106,8 +106,8 @@
       startUp();
     }
 
-    paintLayer.strokeWeight(45);
-    paintLayer.stroke(255, 0, 255, 0.1);
+    paintLayer.strokeWeight(40);
+    paintLayer.stroke(255, 0, 255, 0.075);
     paintLayer.strokeJoin(ROUND);
     paintLayer.noFill();
     vertices[0] = [];
