@@ -93,6 +93,38 @@
     canvas.addEventListener('mouseup', touchstop);
   }
 
+  function touchdown(ev) {
+
+    isMousedown = 1;
+
+    if (introState < 3) {
+      if (audio.isPlaying()) {} else {
+        audio.loop(5);
+      }
+    }
+    if (slide === 0) {
+      startUp();
+    }
+
+    paintLayer.strokeWeight(45);
+    paintLayer.stroke(255, 0, 255, 0.1);
+    paintLayer.strokeJoin(ROUND);
+    paintLayer.noFill();
+    vertices[0] = [];
+    vertices[1] = [];
+    pressureStore = [];
+
+    return false;
+  }
+
+
+  function startUp(){
+    click.play();
+    startButton.remove();
+    slide++;
+    slideShow();
+  }
+
   function backdrop() {
     noTint();
     image(bg, width / 2, height / 2, width, height);
@@ -141,16 +173,6 @@
     setTimeout(autobrushQuality, 2000);
   }
 
-  function touchdown(ev) {
-    isMousedown = 1;
-    paintLayer.strokeWeight(45);
-    paintLayer.stroke(255, 0, 255, 0.1);
-    paintLayer.strokeJoin(ROUND);
-    paintLayer.noFill();
-    vertices[0] = [];
-    vertices[1] = [];
-    pressureStore = [];
-  }
 
   function touchstop(ev) {
     isMousedown = 0;

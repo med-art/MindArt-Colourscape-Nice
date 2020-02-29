@@ -50,6 +50,7 @@ transform: translate(-50%, -50%);
   border-radius: 0.7vmax;
   width: 12vmax;
   height: 3vmax;
+    touch-action: none;
 
 }
 

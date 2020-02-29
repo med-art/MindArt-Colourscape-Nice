@@ -5,20 +5,9 @@ let delayTime = 13000;
 let introState = 0;
 let startButton;
 
-function mousePressed() {
-  if (introState < 3) {
-    if (audio.isPlaying()) {} else {
-      audio.loop(5);
-    }
-  }
-  if (slide === 0) {
-    click.play();
-    startButton.remove();
-    slide++;
-    slideShow();
-  }
-  return false;
-}
+
+
+
 
 function slideShow() {
 
@@ -27,6 +16,7 @@ function slideShow() {
     startButton = createButton(introText[0]);
     startButton.class("startButton");
     startButton.position((width / 2) - (12 * vMax), (height / 2) - (4 * vMax));
+    startButton.mousePressed(startUp);
   }
 
   if (slide === introText.length) {
