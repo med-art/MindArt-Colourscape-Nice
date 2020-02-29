@@ -1,7 +1,7 @@
 let introText = ["Touchez", "Regardez", "Ecoutez"];
 let appCol = "#f1b300";
 let slide = 0;
-let delayTime = 1300;
+let delayTime = 13000;
 let introState = 0;
 let startButton;
 
@@ -56,7 +56,7 @@ function slideShow() {
 if (slide > 0){
 
 if (slide === introText.length-1){
-  delayTime = 1000;
+  delayTime = 13000;
 }
 
       slide++;

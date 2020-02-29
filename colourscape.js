@@ -123,7 +123,7 @@
 
   function touchdown(ev) {
     isMousedown = 1;
-    paintLayer.strokeWeight(55);
+    paintLayer.strokeWeight(45);
     paintLayer.stroke(255, 0, 255, 0.1);
     paintLayer.strokeJoin(ROUND);
     paintLayer.noFill();
@@ -139,6 +139,12 @@
   function moved(ev) {
     ev.preventDefault();
     if (!isMousedown) return;
+
+    if (introState < 3){
+      makeDrawing(mouseX, mouseY);
+    }
+
+   else {
     vertices[0].push(mouseX);
     vertices[1].push(mouseY);
     pressureStore.push(getPressure(ev));
@@ -158,6 +164,7 @@
       paintLayer.curveVertex(vertices[0][i], vertices[1][i]);
     }
     paintLayer.endShape();
+  }
     return false;
   }
 
@@ -180,7 +187,7 @@
     const rotateDrift = 0.2
     var angle1 = atan2(dy, dx) + (random(-rotateDrift, rotateDrift));
     var segLength = windowWidth / 40;
-    var scalar = 40;
+    var scalar = 30;
     let milliComp = 5;
     let tempX = 100;
     let tempY = 100;
