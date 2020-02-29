@@ -124,7 +124,7 @@
   function touchdown(ev) {
     isMousedown = 1;
     paintLayer.strokeWeight(55);
-    paintLayer.stroke(255, 0, 255, 0.04);
+    paintLayer.stroke(255, 0, 255, 0.1);
     paintLayer.strokeJoin(ROUND);
     paintLayer.noFill();
     vertices[0] = [];
