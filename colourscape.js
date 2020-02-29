@@ -246,7 +246,7 @@
     resizeCanvas(width, height);
     backdrop();
     textLayer.resizeCanvas(width, height);
-    paintLayer.resizeCanvas(width, height);
+    //paintLayer.resizeCanvas(width, height);
     //autoLayer.resizeCanvas(width, height);
     autoCopy();
     calcDimensions();
