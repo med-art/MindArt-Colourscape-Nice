@@ -12,6 +12,9 @@
   let colOpacity = 0.4;
   let colourBool = 0;
 
+  let r1 = -5;
+  let r2 = 10;
+
   let cloudHSB = [
     [180, 47, 25],
     [178, 23, 55],
@@ -120,8 +123,8 @@
 
   function touchdown(ev) {
     isMousedown = 1;
-    paintLayer.strokeWeight(100);
-    paintLayer.stroke(255, 0, 255, 0.9);
+    paintLayer.strokeWeight(55);
+    paintLayer.stroke(255, 0, 255, 0.04);
     paintLayer.strokeJoin(ROUND);
     paintLayer.noFill();
     vertices[0] = [];
@@ -141,14 +144,17 @@
     pressureStore.push(getPressure(ev));
     paintLayer.beginShape();
     for (let i = 0; i < vertices[0].length; i++) {
-      if ((i % 4) === 0) {
-        paintLayer.curveVertex(vertices[0][i], vertices[1][i]); // repeated below, annoying..
-        paintLayer.endShape();
-        paintLayer.strokeWeight(pressureStore[i] * 40)
-        paintLayer.beginShape();
-        paintLayer.curveVertex(vertices[0][i - 2], vertices[1][i - 2])
-        paintLayer.curveVertex(vertices[0][i - 1], vertices[1][i - 1])
-      }
+
+      // To enable pressure sensitivity feedback in line-weight, enable below.
+      // if ((i % 4) === 0) {
+      //   paintLayer.curveVertex(vertices[0][i], vertices[1][i]);
+      //   paintLayer.endShape();
+      //   paintLayer.strokeWeight(pressureStore[i] * 40)
+      //   paintLayer.beginShape();
+      //   paintLayer.curveVertex(vertices[0][i - 2], vertices[1][i - 2])
+      //   paintLayer.curveVertex(vertices[0][i - 1], vertices[1][i - 1])
+      // }
+
       paintLayer.curveVertex(vertices[0][i], vertices[1][i]);
     }
     paintLayer.endShape();
@@ -158,16 +164,23 @@
   function autoDraw() {
     pautoX = autoX;
     pautoY = autoY;
-    autoX = autoX + (random(-40, 60));
-    autoY = autoY + (random(-40, 60));
+
+
+
+
+
+    autoX = autoX + (random(r1*1.2, r2*1.2));
+    autoY = autoY + (random(r1, r2));
     makeDrawing(autoX % width, autoY % height, pautoX % width, pautoY % height);
+
+
   }
 
   function makeDrawing(_x, _y, pX, pY) {
     const rotateDrift = 0.2
     var angle1 = atan2(dy, dx) + (random(-rotateDrift, rotateDrift));
     var segLength = windowWidth / 40;
-    var scalar = 30;
+    var scalar = 40;
     let milliComp = 5;
     let tempX = 100;
     let tempY = 100;

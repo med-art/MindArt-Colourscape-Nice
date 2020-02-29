@@ -1,7 +1,7 @@
-let introText = ["Touchez", "Regardez", "Ecoutez", "Touchez"];
+let introText = ["Touchez", "Regardez", "Ecoutez"];
 let appCol = "#f1b300";
 let slide = 0;
-let delayTime = 8000;
+let delayTime = 1300;
 let introState = 0;
 let startButton;
 
@@ -35,7 +35,8 @@ function slideShow() {
     writeTextUI();
     imageMode(CENTER)
     textLayer.clear();
-
+    r1 = -60;
+    r2 = 100;
     autoCopy();
 
 
@@ -55,7 +56,7 @@ function slideShow() {
 if (slide > 0){
 
 if (slide === introText.length-1){
-  delayTime = 10000;
+  delayTime = 1000;
 }
 
       slide++;
