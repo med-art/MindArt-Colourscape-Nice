@@ -16,8 +16,14 @@
   let colourBool = 0;
 
   // domain for randomisation
-  let r1 = -5;
-  let r2 = 10;
+  let r1 = -3;
+  let r2 = 8;
+
+  let smallestBrush = 0.3;
+  let largestBrush = 1.5;
+
+  let brushTimeout = 100;
+  let elapsedTime = 0;
 
   // global mouse track
   let isMousedown = 0;
@@ -149,7 +155,16 @@
   }
 
   function draw() {
-    autoDraw();
+
+    if (millis()-elapsedTime > brushTimeout){
+        autoDraw();
+        elapsedTime = millis();
+    }
+
+
+
+
+
     if (introState === 3) {
       backdrop();
       blendMode(DARKEST);
@@ -219,10 +234,9 @@
   }
 
   function makeDrawing(_x, _y, pX, pY) {
-        const rotateDrift = 0.2
+    const rotateDrift = 0.2
     var angle1 = atan2(dy, dx) + (random(-rotateDrift, rotateDrift));
     var segLength = width / 40;
-    var scalar = 30;
     let milliComp = 5;
     let tempX = 100;
     let tempY = 100;
@@ -235,7 +249,7 @@
       dy = _y - tempY;
       tempX = _x - (cos(angle1) * segLength / 2);
       tempY = _y - (sin(angle1) * segLength / 2);
-      scalar = constrain(300 * (random(3, abs(_x - pX)) / width), 0.1, 0.7);
+      let scalar = constrain(300 * (random(3, abs(_x - pX)) / width), smallestBrush, largestBrush);
       segment(tempX, tempY, angle1, brush[brushRandomiser], scalar)
       milliTrack = milliCounter;
     }

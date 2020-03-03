@@ -27,6 +27,9 @@ function slideShow() {
     textLayer.clear();
     r1 = -60;
     r2 = 100;
+    smallestBrush = 0.1;
+    largestBrush = 0.7;
+    colOpacity = 0.4;
     autoCopy();
 
 
