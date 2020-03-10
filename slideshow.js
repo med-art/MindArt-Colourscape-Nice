@@ -1,4 +1,4 @@
-let introText = ["Touchez", "Regardez", "Ecoutez"];
+let introText = ["Touchez et Ecoutez", "Regardez", "Dessinez"];
 let appCol = "#f1b300";
 let slide = 0;
 let delayTime = 13000;
@@ -15,7 +15,7 @@ function slideShow() {
     background(241, 181, 0); // change for these app colours
     startButton = createButton(introText[0]);
     startButton.class("startButton");
-    startButton.position((width / 2) - (12 * vMax), (height / 2) - (4 * vMax));
+    startButton.position((width / 2) - (20 * vMax), (height / 2) - (4 * vMax));
     startButton.mousePressed(startUp);
   }
 
@@ -41,7 +41,7 @@ function slideShow() {
 
     textLayer.clear();
     textLayer.fill(255, 5);
-    textLayer.textSize(vMax*8);
+    textLayer.textSize(vMax*7);
     textLayer.textAlign(CENTER, CENTER);
     textLayer.rectMode(CENTER);
 

@@ -22,7 +22,7 @@
   let smallestBrush = 0.3;
   let largestBrush = 1.5;
 
-  let brushTimeout = 100;
+  let brushTimeout = 30;
   let elapsedTime = 0;
 
   // global mouse track
@@ -56,7 +56,7 @@
     for (let i = 1; i < 21; i++) {
       brush[i] = loadImage('assets/br-' + i + '.png')
     }
-    audio = loadSound('assets/audio.mp3');
+    audio = loadSound('assets/audio_1.mp3');
     click = loadSound('assets/click.mp3');
   }
 
@@ -105,7 +105,7 @@
 
     if (introState < 3) {
       if (audio.isPlaying()) {} else {
-        audio.loop(5);
+        audio.loop(0);
       }
     }
     if (slide === 0) {
@@ -128,6 +128,7 @@
     click.play();
     startButton.remove();
     slide++;
+      //BUG, infinite loop potential..
     slideShow();
   }
 
@@ -175,7 +176,7 @@
       blendMode(BLEND);
       background(352, 68, 89, 100);
       if (slide > 0) {
-        textLayer.text(introText[slide - 1], width / 2, (height / 6) * (slide));
+        textLayer.text(introText[slide - 1], width / 2, (height / 3) * (slide - 1));
       }
       imageMode(CORNER)
       image(autoLayer, 0, 0, width, height);
