@@ -51,6 +51,10 @@ let slide = 0,
   introState = 0,
   startButton;
 
+//DATA
+let pointStore;
+let lineStore;
+
 
 function preload() {
   bg = loadImage('assets/paper.jpg');
@@ -98,6 +102,10 @@ function setup() {
   canvas.addEventListener('touchend', touchstop);
   canvas.addEventListener('touchleave', touchstop);
   canvas.addEventListener('mouseup', touchstop);
+
+  //DATA
+  pointStore = [];
+  lineStore = [];
 }
 
 function touchdown(ev) {
@@ -181,6 +189,12 @@ function autobrushQuality() {
 
 function touchstop(ev) {
   isMousedown = 0;
+
+  if (introComplete) {
+    lineStore.push(pointStore);
+    pointStore = [];
+  }
+
 }
 
 function moved(ev) {
@@ -194,6 +208,16 @@ function moved(ev) {
     vertices[1].push(mouseY);
     pressureStore.push(getPressure(ev));
     paintLayer.beginShape();
+
+    //DATA
+    pressure = getPressure(ev);
+    pointStore.push({
+      time: new Date().getTime(),
+      x: mouseX,
+      y: mouseY,
+      pressure: pressure
+    });
+
     for (let i = 0; i < vertices[0].length; i++) {
 
       // To enable pressure sensitivity feedback in line-weight, enable below.
